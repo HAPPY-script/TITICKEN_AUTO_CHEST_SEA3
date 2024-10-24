@@ -1,0 +1,84 @@
+local player = game.Players.LocalPlayer
+
+
+local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+
+
+local menu = Instance.new("Frame", screenGui)
+menu.Size = UDim2.new(0, 267, 0, 150)
+menu.Position = UDim2.new(0.5, -133, 0.5, -50)
+menu.BackgroundColor3 = Color3.fromRGB(75, 0, 130)
+menu.BorderSizePixel = 0
+
+
+local border = Instance.new("Frame", menu)
+border.Size = UDim2.new(1, 10, 1, 10)
+border.Position = UDim2.new(0, -5, 0, -5)
+border.BackgroundColor3 = Color3.fromRGB(255, 105, 180)
+border.BorderSizePixel = 0
+border.BackgroundTransparency = 0.5 -- Tạo độ sáng cho viền
+
+
+local closeButton = Instance.new("TextButton", menu)
+closeButton.Size = UDim2.new(0, 25, 0, 25)
+closeButton.Position = UDim2.new(0, 5, 0, 5)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.Text = "X"
+closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeButton.MouseButton1Click:Connect(function()
+    menu:Destroy()
+end)
+
+
+local openButton = Instance.new("TextButton", menu)
+openButton.Size = UDim2.new(0, 100, 0, 40)
+openButton.Position = UDim2.new(0.5, -50, 1, -50)
+openButton.BackgroundColor3 = Color3.fromRGB(75, 0, 130)
+openButton.Text = "OPEN"
+openButton.TextColor3 = Color3.fromRGB(255, 105, 180)
+openButton.BorderColor3 = Color3.fromRGB(148, 0, 211)
+openButton.MouseButton1Click:Connect(function()
+    
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/HAPPY-script/AUTO_CHEST_SEA3/refs/heads/main/AUTO_CHEST_SEA3"))()
+    menu:Destroy()
+end)
+
+
+local textLabel = Instance.new("TextLabel", menu)
+textLabel.Size = UDim2.new(1, 0, 0, 60)
+textLabel.Position = UDim2.new(0, 0, 0.3, 0)
+textLabel.Text = "AUTO CHEST SEA 3"
+textLabel.TextColor3 = Color3.fromRGB(255, 105, 180)
+textLabel.BackgroundTransparency = 1
+textLabel.TextScaled = true
+
+
+local dragging = false
+local dragInput, mousePos, framePos
+
+menu.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        mousePos = input.Position
+        framePos = menu.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+menu.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        local delta = input.Position - mousePos
+        menu.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+    end
+end)
